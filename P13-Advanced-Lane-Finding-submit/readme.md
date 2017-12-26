@@ -56,7 +56,7 @@ You're reading it!
 To demonstrate this step, I will describe how I apply the distortion correction to one of the test images like this one:
 
 I used the camera calibration matrix and distortion coefficients to undistort the highway driving images. 
-The contrast with the orginal image is as follows: 
+The contrast with the original image is as follows: 
 
 ![alt text][image2]
 
@@ -75,7 +75,7 @@ Here's an example of my output for this step.
 
 #### 3. Describe how (and identify where in your code) you performed a perspective transform and provide an example of a transformed image.
 
-In order to transform the undistorted image to a "birds eye view" of the road, I investigated a typical picture,manually visualize the locations of the lane lines, and set the source--`src` and destination points--`dst`. Then I applied `cv2.getPerspectiveTransform` and `cv2.warpPerspective` to get the warped image.
+In order to transform the undistorted image to a "birds eye view" of the road, I investigated a typical picture, manually visualize the locations of the lane lines, and set the source--`src` and destination points--`dst`. Then I applied `cv2.getPerspectiveTransform` and `cv2.warpPerspective` to get the warped image.
 
 ![alt text][image4]
 
@@ -93,13 +93,13 @@ Besides, I also applied the region mask technic on these images, with the help o
 
 ![](./output_images/Fianl.png)
 
-However, I didn't apply the region mask on vedio frame,. 
+However, I didn't apply the region mask on video frame,. 
 
 
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
-I identified peaks in a histogram of the binary image to determine original location of lane lines. Then I detected all non zero pixels around it, to get the coordinates. Afterwards, I fitted a 2nd order  polynomial with the help of the `np.polyfit()` function to get the ploynomial coefficient.
+I identified peaks in a histogram of the binary image to determine original location of lane lines. Then I detected all non zero pixels around it, to get the coordinates. Afterwards, I fitted a 2nd order  polynomial with the help of the `np.polyfit()` function to get the polynomial coefficient.
 
 
 ![alt text][image5]
@@ -122,7 +122,7 @@ left_real_curverad = ((1 + (2*left_fit[0]*y_eval*ym_per_pix + left_fit[1])**2)**
 right_real_curverad = ((1 + (2*right_fit[0]*y_eval*ym_per_pix + right_fit[1])**2)**1.5) / np.absolute(2*right_fit[0])
 
 ```
-- I calculated the mean of left and right bottoms of lane lines as the vehicle position. Then I calculted the distance of between the position and the center of the image as the offset. 
+- I calculated the mean of left and right bottoms of lane lines as the vehicle position. Then I calculated the distance of between the position and the center of the image as the offset. 
 
 ```
 left_bottom = left_fit[0]*720**2 + left_fit[1]*720 + left_fit[2]
@@ -137,7 +137,7 @@ offset = (640 - position)*3.7/700
 Finally, I defined a function to process the image. 
 
 - Fill and highlight the space between lane lines.
-- Use inverse perspective trasformation to unwarp the image from birds eye back to its original perspective.
+- Use inverse perspective transformation to unwarp the image from birds eye back to its original perspective.
 - Print the offset from center and radius of curvature on to the final outputs.
 
 Here is an example of my result on a test image:
@@ -152,7 +152,7 @@ Here is an example of my result on a test image:
 
 First, I defined a class `Line()` with `window()` and `around()` methods . 
 
-Second, I detected lane line pixels with `window()` if no lane lines was found in the previous frame, otherwise, I used `around()` for detection close to the polynomial calculted based on previous frame. 
+Second, I detected lane line pixels with `window()` if no lane lines was found in the previous frame, otherwise, I used `around()` for detection close to the polynomial calculated based on previous frame. 
 
 Third, to smooth the output, I chose to average the polynomial coefficients over the past 10 frames. 
 
@@ -166,4 +166,4 @@ Here is the final result:
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
 When there was shadow over the road, it was easy for fail. When I found the detected lane lines were largely different from previous ones, I would ignore them. 
-When the road was exposed on various light, weather, it would be more difficult. I would collect more driving vedioes to extract the feature of different circumstances and hunt for solutions. 
+When the road was exposed on various light, weather, it would be more difficult. I would collect more driving videos to extract the feature of different circumstances and hunt for solutions. 
