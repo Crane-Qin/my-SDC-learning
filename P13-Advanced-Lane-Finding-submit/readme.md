@@ -63,13 +63,9 @@ The contrast with the original image is as follows:
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
 
-I converted the image to HLS color spaces and used the S Channel, with a min threshold of 170 and a max threshold of 255. This did a fairly good job of identifying both the white and yellow lane lines. 
+I converted the image to HLS, LUV, Lab color spaces and applied threshold separately on their `s_channel`, `l_channel`, `b_channel`. Beside, I calculated and used threshold on the x_orientated sobel of `s_channel`. 
 
-Beside, I calculated the x_orientated, y_orientated, magnitude, direction of sobel. With different thresholds, it also did a good job.
-
-Then I used a combination of HLS and sobel thresholds to generate a binary image.  
-
-Here's an example of my output for this step. 
+Then I combined them to generate a binary image. Here's an example of my output for this step: 
 
 ![alt text][image3]
 
@@ -84,17 +80,14 @@ This resulted in the following source and destination points:
 
 | Source        | Destination   | 
 |:-------------:|:-------------:| 
-| 570, 470      | 223,0       | 
-| 722, 470     | 893,0      |
-| 1027.79,676.525     | 893,720     |
-| 279.837,676.525      | 223,720        |
+| 490, 480      | 0, 0      | 
+| 810, 480     | 1280,0      |
+| 1250, 720   | 1250, 720     |
+| 40, 720      | 40, 720        |
 
 Besides, I also applied the region mask technic on these images, with the help of `cv2.fillPoly`. After I applied all these technics, I got the final results: 
 
 ![](./output_images/Fianl.png)
-
-However, I didn't apply the region mask on video frame,. 
-
 
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
@@ -111,15 +104,14 @@ I identified peaks in a histogram of the binary image to determine original loca
 ```
 ym_per_pix = 30/720 # meters per pixel in y dimension
 
-xm_per_pix = 3.7/700 # meters per pixel in x dimension
+xm_per_pix = 3.7/(right_bottom-left_bottom) # meters per pixel in x dimension
 ```
 
 - I calculated the curvature lane lines of the image bottom. Then I use the mean of two lane curvatures as the result. *source:* http://www.intmath.com/applications-differentiation/8-radius-curvature.php
 
 ```
-left_real_curverad = ((1 + (2*left_fit[0]*y_eval*ym_per_pix + left_fit[1])**2)**1.5) / np.absolute(2*left_fit[0])
-
-right_real_curverad = ((1 + (2*right_fit[0]*y_eval*ym_per_pix + right_fit[1])**2)**1.5) / np.absolute(2*right_fit[0])
+left_real_curverad = ((1 + (2*left_fit_real_coef[0]*y_eval*ym_per_pix + left_fit_real_coef[1])**2)**1.5) / np.absolute(2*left_fit_real_coef[0])
+right_real_curverad = ((1 + (2*right_fit_real_coef[0]*y_eval*ym_per_pix + right_fit_real_coef[1])**2)**1.5) / np.absolute(2*right_fit_real_coef[0])
 
 ```
 - I calculated the mean of left and right bottoms of lane lines as the vehicle position. Then I calculated the distance of between the position and the center of the image as the offset. 
@@ -129,7 +121,7 @@ left_bottom = left_fit[0]*720**2 + left_fit[1]*720 + left_fit[2]
 right_bottom= right_fit[0]*720**2 + right_fit[1]*720 + right_fit[2]
 
 position = (left_bottom+right_bottom)/2.0
-offset = (640 - position)*3.7/700
+offset = (640 - position)*xm_per_pix
 ```
 
 #### 6. Provide an example image of your result plotted back down onto the road such that the lane area is identified clearly.
@@ -154,7 +146,7 @@ First, I defined a class `Line()` with `window()` and `around()` methods .
 
 Second, I detected lane line pixels with `window()` if no lane lines was found in the previous frame, otherwise, I used `around()` for detection close to the polynomial calculated based on previous frame. 
 
-Third, to smooth the output, I chose to average the polynomial coefficients over the past 10 frames. 
+Third, to smooth the output, I chose to average the polynomial coefficients over the past 5 frames. 
 
 Here is the final result:
 
