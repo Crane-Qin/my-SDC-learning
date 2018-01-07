@@ -2,7 +2,7 @@
 ### You can use this file as a template for your writeup if you want to submit it as a markdown file, but feel free to use some other method and submit a pdf if you prefer.
 
 ---
-
+	
 **Vehicle Detection Project**
 
 The goals / steps of this project are the following:
@@ -60,7 +60,7 @@ I tried various combinations of parameters as below:
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
-I extracted th cars and non-cars features via the function `extract_features` with the parameter in the chart. Normalization was an key step so that a certain subset of the features wouldn't dominate. I used `sklearn.StandardScaler()` method for this. Afterwards I shuffled and splited them into training and test sets, fed the former to the `sklearn.svm.LinearSVC()` and fed the latter to the trained model to get the accuracy.
+I extracted the cars and non-cars features via the function `extract_features` with the parameter in the chart. Normalization was a key step so that a certain subset of the features wouldn't dominate. I used `sklearn.StandardScaler()` method for this. Afterwards I shuffled and splited them into training and test sets, fed the former to the `sklearn.svm.LinearSVC()` and fed the latter to the trained model to get the accuracy.
 
 Finally, I chose parameters in the last row, whose accuracy was 0.9935.
 
@@ -87,7 +87,7 @@ Here's a [link to my video result](./project_video.mp4)
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections accross the last 3 frames and  created a heatmap. I also recorded the positive detections numbers in each frame and use the max number as the threshold to reject false positives. 
+I recorded the positions of positive detections across the last 3 frames and  created a heatmap. I also recorded the positive detections numbers in each frame and use the max number as the threshold to reject false positives. 
 
 I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
@@ -103,6 +103,6 @@ Here's an example result showing the heatmap from a series of frames of video, t
 
 I set the scaling ratio manually, if the car are very large or very small, the pipeline would fail to detect it. So it is necessary to test on various videos to get the best parameters. 
 
-The accuracy on dectecting cars is not high enough. If the number of sliding windows increase largely, the chance of false positives would be enhanced. One possible way to modify the classifier is data augmentation.
+The accuracy on detecting cars is not high enough. If the number of sliding windows increase largely, the chance of false positives would be enhanced. One possible way to modify the classifier is data augmentation.
 
-What's more, there are plenty of car features other than colors, such as speed, locaiton, and route. If given enough time, I would combine these together to make a robust classifier. 
+What's more, there are plenty of car features other than colors, such as speed, location, and route. If given enough time, I would combine these together to make a robust classifier. 
