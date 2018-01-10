@@ -56,13 +56,15 @@ I tried various combinations of parameters as below:
 | Yes      |  YUV        | 9            | 8               | 2               | ALL          | True,(32, 32)       |False |0.9935  |
 | NO       |   LUV      | 14           | 16              | 2               | ALL           | True,(16, 16)       |True,32  | 0.9952 |
 | NO       |   LUV      | 10           | 16              | 2               | ALL           | True,(16, 16)       |True,32  | 0.9935 |
+| NO       |   YUV      | 11           | 16              | 2               | ALL           | False       | False | 0.9873 |
+| NO       |   YCrCb      | 11           | 8              | 2               | ALL           | False       | False | 0.9876 |
 
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
 I extracted the cars and non-cars features via the function `extract_features` with the parameter in the chart. Normalization was a key step so that a certain subset of the features wouldn't dominate. I used `sklearn.StandardScaler()` method for this. Afterwards I shuffled and splited them into training and test sets, fed the former to the `sklearn.svm.LinearSVC()` and fed the latter to the trained model to get the accuracy.
 
-Finally, I chose parameters in the last row, whose accuracy was 0.9935.
+Finally, I chose parameters in the last row, whose accuracy was 0.9876.
 
 ### Sliding Window Search
 
@@ -74,7 +76,7 @@ I drew windows on the test pictures as follows, to see if the windows could cove
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on 4 scales using LUV 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
+Ultimately I searched on 4 scales using YCrCb 3-channel HOG features plus spatially binned color and histograms of color in the feature vector, which provided a nice result.  Here are some example images:
 
 ![alt text][image4]
 ---
@@ -87,7 +89,7 @@ Here's a [link to my video result](./project_video.mp4)
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
-I recorded the positions of positive detections across the last 3 frames and  created a heatmap. I also recorded the positive detections numbers in each frame and use the max number as the threshold to reject false positives. 
+I recorded the positions of positive detections across the last 10 frames and  created a heatmap. I also used the threshold on each `find_cars` step to reject false positives. 
 
 I then used `scipy.ndimage.measurements.label()` to identify individual blobs in the heatmap. I then assumed each blob corresponded to a vehicle.  I constructed bounding boxes to cover the area of each blob detected.  
 
